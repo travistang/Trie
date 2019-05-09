@@ -92,7 +92,8 @@ public class Node {
     // remove this self from parents only when this has no descendents
     // and that there are no records.
     if(children.size() == 0 && points == null) {
-      parent.children.remove(this);
+      // remove itself from parent using the character as key.
+      parent.children.remove(character);
       parent.delete();
       return;
     }
