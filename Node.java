@@ -1,12 +1,16 @@
 // import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Collections;
+import java.util.Set;
+
 
 public class Node {
   private Character character;
   private Node parent;
   private Integer points = null;
 
-  private ArrayList<Node> children = new ArrayList<Node>();
+  private HashMap<Character, Node> children = new HashMap<Character, Node>();
 
   public Node() { }
 
@@ -20,22 +24,37 @@ public class Node {
       Prevent inserting node with the same key with one of the children
     */
     if(getChild(ch) == null) {
-      children.add(child);
+      children.put(ch, child);
     }
   }
-
+  /**
+    Return the child that holds the given character. Return null if it doesn't exist
+  */
   public Node getChild(char ch) {
-    // otherwise query each nodes
-    for(Node n : children) {
-      if(n.character == ch) return n;
+    return children.get(ch);
+  }
+
+  /**
+    Retrieve all node objects from the children hashmap.
+    Additional provide sorting functionality
+  */
+  private ArrayList<Node> getChildNodes() {
+    ArrayList<Node> childrenNodes = new ArrayList<Node>();
+
+    // sort the keys in ascending order.
+    ArrayList<Character> keys = new ArrayList<Character>(children.keySet());
+    Collections.sort(keys);
+
+    // loop through the keys to get values.
+    for(Character ch : keys) {
+      childrenNodes.add(children.get(ch));
     }
 
-    // nothing found.
-    return null;
+    return childrenNodes;
   }
 
   private Node findInChildren(String key) {
-    for(Node child : children) {
+    for(Node child : getChildNodes()) {
       Node result = child.find(key);
       if(result != null) return result;
     }
@@ -95,7 +114,7 @@ public class Node {
     }
     // wrap children around a bracket
     rep += '(';
-    for(Node child: children) {
+    for(Node child: getChildNodes()) {
       rep += child.toString();
     }
     rep += ')';
